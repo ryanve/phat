@@ -61,7 +61,7 @@ if ( ! exists( 'apply' ) ) {
  *
  */
 if ( ! exists( 'invoke' ) ) {
-	function invoke ( $value, $args = array() ) {
+    function invoke ( $value, $args = array() ) {
         # fire anonymous or __invoke funcs ( not func names )
         # this is useful for accepting "func args" as params
         # php.net/manual/en/functions.anonymous.php
@@ -69,7 +69,7 @@ if ( ! exists( 'invoke' ) ) {
         if ( ! \is_object($value) || ! \is_callable($value) )
             return $value;
         return \call_user_func_array( $value, $args );
-	}
+    }
 }
 
 /**
@@ -78,11 +78,11 @@ if ( ! exists( 'invoke' ) ) {
  * @return  string
  */
 if ( ! exists( 'esc' ) ) {
-	function esc ( $value ) {
+    function esc ( $value ) {
         if ( ! ($value = (string) $value) )
             return $value;
         return \htmlentities( $value, ENT_QUOTES, null, false );
-	}
+    }
 }
 
  
@@ -223,7 +223,7 @@ if ( ! exists( 'tagname' ) ) {
     function tagname ( $name = null ) {
         # allow: alphanumeric|underscore|colon
         return \is_string($name) ? \preg_replace( '/[^\w\:]/', '', $name ) : '';
-	}
+    }
 }
 
 /**
@@ -325,7 +325,7 @@ if ( ! exists( 'parse_attrs' ) ) {
         
         if ( '<' === $attrs[0] ) # looks like a tag so strip the tagname
             while ( $attrs && ! \ctype_space($attrs[0]) && $attrs[0] !== '>' )
-                array_shift($attrs);
+                \array_shift($attrs);
 
         $arr = array(); # output
         $name = '';     # for the current attr being parsed
@@ -412,7 +412,7 @@ if ( ! exists( 'tag' ) ) {
         $tag .= '>';
         null === $inner_html or $tag .= $inner_html . '</' . $tagname . '>';
         return $tag;
-	}
+    }
 }
 
 /**
@@ -463,27 +463,27 @@ if ( ! exists( 'dom' ) ) {
 # use apply() for these for easier maintainability
 
 if ( ! exists( 'esc_e' ) ) {
-	function esc_e ( $value ) {
+    function esc_e ( $value ) {
         echo apply( 'esc', \func_get_args() );
-	}
+    }
 }
 
 if ( ! exists( 'encode_e' ) ) {
-	function encode_e () {
+    function encode_e () {
         echo apply( 'encode', \func_get_args() );
-	}
+    }
 }
 
 if ( ! exists( 'attrs_e' ) ) {
-	function attrs_e () {
+    function attrs_e () {
         echo apply( 'attrs', \func_get_args() );
-	}
+    }
 }
 
 if ( ! exists( 'tag_e' ) ) {
-	function tag_e () {
+    function tag_e () {
         echo apply( 'tag', \func_get_args() );
-	}
+    }
 }
 
 #end
