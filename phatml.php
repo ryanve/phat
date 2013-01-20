@@ -156,8 +156,9 @@ if ( ! exists( 'delimiter' ) ) {
 
         # define delimiters
         # dev.w3.org/html5/spec-author-view/index.html#attributes-1
+        # whatwg.org/specs/web-apps/current-work/multipage/microdata.html#names:-the-itemprop-attribute
 
-        $ssv = array('class', 'rel', 'accesskey', 'dropzone', 'headers', 'sizes', 'sandbox', 'accept-charset');
+        $ssv = array('class', 'rel', 'itemprop', 'accesskey', 'dropzone', 'headers', 'sizes', 'sandbox', 'accept-charset');
         $csv = array('accept');
         
         foreach ( $ssv as $name )
