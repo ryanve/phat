@@ -3,9 +3,9 @@ namespace phat;
 
 /**
  * phatml.php     PHP functions for HTML markup
- * @version       0.x
+ * @version       1.0
  * @author        Ryan Van Etten <@ryanve>
- * @link          github.com/ryanve/phatml
+ * @link          phat.airve.com
  * @license       MIT
  * @uses          PHP 5.3
  */
