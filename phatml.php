@@ -159,7 +159,7 @@ if ( ! exists( 'delimiter' ) ) {
         # whatwg.org/specs/web-apps/current-work/multipage/microdata.html#names:-the-itemprop-attribute
 
         $ssv = array('class', 'rel', 'itemprop', 'accesskey', 'dropzone', 'headers', 'sizes', 'sandbox', 'accept-charset');
-        $csv = array('accept');
+        $csv = array('accept', 'media');
         
         foreach ( $ssv as $name )
             delimiter( $name, ' ' );
