@@ -2,7 +2,7 @@
 namespace phat;
 
 /**
- * phatml.php     PHP functions for HTML markup
+ * phat           PHP functions for HTML markup
  * @version       1.0
  * @author        Ryan Van Etten <@ryanve>
  * @link          phat.airve.com

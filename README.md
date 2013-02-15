@@ -1,4 +1,4 @@
-# [phatml](https://github.com/ryanve/phatml)
+# [phat](https://github.com/ryanve/phat)
 
 PHP functions for HTML markup
 
