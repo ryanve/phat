@@ -4,7 +4,7 @@ PHP functions for HTML markup.
 
 All functions live under the "phat" [namespace](http://php.net/manual/en/language.namespaces.php).
 
-## getters
+## gets
 
 ### `esc( $string )`
 
