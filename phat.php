@@ -148,7 +148,7 @@ if ( ! \function_exists( __NAMESPACE__ . '\\decode' ) ) {
         if ( ! $value || ! \is_string($value) )
             return $value;
 
-        if ( $name && ($d = delimiter($name)) !== null )
+        if ( $name && \is_string($d = delimiter($name)) )
             return token_explode( \html_entity_decode( $value, ENT_QUOTES ), $d );
             
         $result = \json_decode( $value, true ); # null if not json
