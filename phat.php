@@ -133,9 +133,10 @@ if ( ! \function_exists( __NAMESPACE__ . '\\encode' ) ) {
             $value and $value = \htmlentities( $value, ENT_NOQUOTES, null, false );
             return \str_replace( "'", '&apos;', $value );
         }
-            
-        if ( ! ( $safe = \is_scalar($value) ) ) {
+        
+        $scalar = \is_scalar($value);
 
+        if ( ! $scalar ) {
             if ( ! $value ) # null|array()
                 return $value === null ? 'null' : '';
                 
@@ -144,7 +145,7 @@ if ( ! \function_exists( __NAMESPACE__ . '\\encode' ) ) {
         }
         
         $value = \json_encode($value); # array|object|number|boolean
-        return $safe ? $value : encode($value);
+        return $scalar ? $value : encode($value);
     }
 }
 
@@ -251,7 +252,7 @@ if ( ! \function_exists( __NAMESPACE__ . '\\attrs' ) ) {
             return $name;
             
         # use single quotes for compatibility with JSON
-        return $name . "='" . encode($value) . "'";
+        return $name . "='" . encode($value, $name) . "'";
     }
 }
 
