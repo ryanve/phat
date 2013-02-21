@@ -1,66 +1,19 @@
 <?php
-namespace phat;
-
 /**
- * phat           PHP functions for HTML markup
- * @version       1.0
- * @author        Ryan Van Etten <@ryanve>
+ * phat           PHP functions for HTML
  * @link          phat.airve.com
+ * @author        Ryan Van Etten
+ * @package       ryanve/phat
+ * @version       1.1.0
  * @license       MIT
- * @uses          PHP 5.3
  */
 
-/**
- * Convert a function name or class name from a namespace into a 
- * fully-qualified name. In other words, prefix it with the namespace.
- * @param   string   A local function name or class name.
- * @param   string=  The namespace. Defaults to the current namespace.
- */
-if ( ! \function_exists( __NAMESPACE__ . '\\ns' ) ) {
-    function ns ( $name, $ns = null ) {
-        $ns or $ns = __NAMESPACE__;
-        return $ns . '\\' . \ltrim( $name, '\\' );
-    }
-}
-
-/**
- * Check if a function name or class name exists in the current namespace.
- * @param   string   $name
- * @param   string=  $what
- * @return  bool
- */
-if ( ! \function_exists( __NAMESPACE__ . '\\exists' ) ) {
-    function exists ( $name, $what = 'function' ) {
-        return \call_user_func( $what . '_exists', ns($name) );
-    }
-}
-
-/**
- * Call a namespaced function by name. ( Params can be supplied via extra args. )
- * @param   string    $fname
- */
-if ( ! exists( 'call' ) ) {
-    function call ( $fname ) {
-        $params = func_get_args();
-        return \call_user_func_array( ns( \array_shift($params) ), $params );
-    }
-}
-
-/**
- * Call a namespaced function by name. ( Params can be supplied via array. )
- * @param   string    $fname
- * @param   array     $params
- */
-if ( ! exists( 'apply' ) ) {
-    function apply ( $fname, $params = array() ) {
-        return \call_user_func_array( ns( $fname ), $params );
-    }
-}
+namespace phat; # PHP 5.3+
 
 /**
  *
  */
-if ( ! exists( 'invoke' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\invoke' ) ) {
     function invoke ( $value, $args = array() ) {
         # fire anonymous or __invoke funcs ( not func names )
         # this is useful for accepting "func args" as params
@@ -77,7 +30,7 @@ if ( ! exists( 'invoke' ) ) {
  * @param   string|mixed  $value
  * @return  string
  */
-if ( ! exists( 'esc' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\esc' ) ) {
     function esc ( $value ) {
         if ( ! ($value = (string) $value) )
             return $value;
@@ -92,7 +45,7 @@ if ( ! exists( 'esc' ) ) {
  * @return   string
  * @link     dev.w3.org/html5/spec/common-microsyntaxes.html
  */
-if ( ! exists( 'token_implode' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\token_implode' ) ) {
     function token_implode ( $tokens, $glue = ' ' ) {
 
         if ( \is_scalar($tokens) )
@@ -117,7 +70,7 @@ if ( ! exists( 'token_implode' ) ) {
  * @return   array
  * @link     dev.w3.org/html5/spec/common-microsyntaxes.html
  */
-if ( ! exists( 'token_explode' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\token_explode' ) ) {
     function token_explode ( $tokens, $glue = ' ' ) {
 
         if ( \is_string($tokens) )
@@ -142,7 +95,7 @@ if ( ! exists( 'token_explode' ) ) {
 /**
  * An extendable hash for token types. ( See usage in encode()/decode() )
  */
-if ( ! exists( 'delimiter' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\delimiter' ) ) {
 
     function delimiter ( $name, $value = null ) {
         static $hash; # php.net/manual/en/language.variables.scope.php
@@ -173,7 +126,7 @@ if ( ! exists( 'delimiter' ) ) {
 /**
  *
  */
-if ( ! exists( 'encode' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\encode' ) ) {
     function encode ( $value, $name = null ) {
     
         if ( \is_string($value) ) {
@@ -198,7 +151,7 @@ if ( ! exists( 'encode' ) ) {
 /**
  *
  */
-if ( ! exists( 'decode' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\decode' ) ) {
     function decode ( $value, $name = null ) {
 
         if ( ! $value || ! \is_string($value) )
@@ -220,7 +173,7 @@ if ( ! exists( 'decode' ) ) {
  * @param   string|*  $name
  * @return  string
  */
-if ( ! exists( 'tagname' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\tagname' ) ) {
     function tagname ( $name = null ) {
         # allow: alphanumeric|underscore|colon
         return \is_string($name) ? \preg_replace( '/[^\w\:]/', '', $name ) : '';
@@ -232,7 +185,7 @@ if ( ! exists( 'tagname' ) ) {
  * @param   string|*  $name
  * @return  string
  */
-if ( ! exists( 'attname' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\attname' ) ) {
     function attname ( $name ) {
         # sanitize attr name (allow: alphanumeric, underscore, hyphen, period)
         # must start with letter or underscore
@@ -253,7 +206,7 @@ if ( ! exists( 'attname' ) ) {
                                  names, or an indexed array of attr names.
  * @param  mixed=       $value   Attr value for context when $name is an attribute name.
  */
-if ( ! exists( 'attrs' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\attrs' ) ) {
     function attrs ( $name, $value = '' ) {
     
         $array = array();
@@ -316,7 +269,7 @@ if ( ! exists( 'attrs' ) ) {
  * @example  parse_attrs( '<a href="example"></a>' )
  * @example  parse_attrs( '<a href="example">' )
  */
-if ( ! exists( 'parse_attrs' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\parse_attrs' ) ) {
     function parse_attrs ($attrs) {
 
         if ( ! \is_scalar($attrs) )
@@ -396,7 +349,7 @@ if ( ! exists( 'parse_attrs' ) ) {
  * @param   string        $inner_html
  * @return  string
  */
-if ( ! exists( 'tag' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\tag' ) ) {
     function tag ( $tagname = null, $attrs = null, $inner_html = null ) {
 
         # allows args to be set at runtime
@@ -421,7 +374,7 @@ if ( ! exists( 'tag' ) ) {
  * @param   DOMDocument|string|array   $html
  * @return  DOMDocument
  */
-if ( ! exists( 'dom' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\dom' ) ) {
     function dom ( $html ) {
 
         $source = null;
@@ -461,29 +414,29 @@ if ( ! exists( 'dom' ) ) {
 }
 
 # echoing functions are suffixed with _e
-# use apply() for these for easier maintainability
+# apply func_get_args to ensure proper args
 
-if ( ! exists( 'esc_e' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\esc_e' ) ) {
     function esc_e ( $value ) {
-        echo apply( 'esc', \func_get_args() );
+        echo \call_user_func_array( __NAMESPACE__ . '\\esc', \func_get_args() );
     }
 }
 
-if ( ! exists( 'encode_e' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\encode_e' ) ) {
     function encode_e () {
-        echo apply( 'encode', \func_get_args() );
+        echo \call_user_func_array( __NAMESPACE__ . '\\encode', \func_get_args() );
     }
 }
 
-if ( ! exists( 'attrs_e' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\attrs_e' ) ) {
     function attrs_e () {
-        echo apply( 'attrs', \func_get_args() );
+        echo \call_user_func_array( __NAMESPACE__ . '\\attrs', \func_get_args() );
     }
 }
 
-if ( ! exists( 'tag_e' ) ) {
+if ( ! \function_exists( __NAMESPACE__ . '\\tag_e' ) ) {
     function tag_e () {
-        echo apply( 'tag', \func_get_args() );
+        echo \call_user_func_array( __NAMESPACE__ . '\\tag', \func_get_args() );
     }
 }
 
