@@ -4,24 +4,22 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       ryanve/phat
- * @version       1.1.1
+ * @version       1.2.0
  * @license       MIT
  */
 
 namespace phat; # PHP 5.3+
 
 /**
- *
+ * @param  mixed  $value
  */
-if ( ! \function_exists( __NAMESPACE__ . '\\invoke' ) ) {
-    function invoke ( $value, $args = array() ) {
-        # fire anonymous or __invoke funcs ( not func names )
+if ( ! \function_exists( __NAMESPACE__ . '\\result' ) ) {
+    function result ( $value ) {
+        # fire anonymous funcs (not names or other objects)
         # this is useful for accepting "func args" as params
         # php.net/manual/en/functions.anonymous.php
         # php.net/manual/en/language.oop5.magic.php
-        if ( ! \is_object($value) || ! \is_callable($value) )
-            return $value;
-        return \call_user_func_array( $value, $args );
+        return $value instanceof \Closure ? $value() : $value;
     }
 }
 
@@ -130,8 +128,9 @@ if ( ! \function_exists( __NAMESPACE__ . '\\encode' ) ) {
         if ( ! $scalar ) {
             if ( ! $value ) # null|array()
                 return $value === null ? 'null' : '';
-                
-            if ( $name && ($d = delimiter($name)) !== null )
+            if ( $value instanceof \Closure )
+                return encode( $value(), $name );
+            if ( $name && \is_string($d = delimiter($name)) )
                 return encode( token_implode($value, $d) );
         }
         
@@ -162,11 +161,11 @@ if ( ! \function_exists( __NAMESPACE__ . '\\decode' ) ) {
 
 /**
  * Sanitize an html or xml tagname
- * @param   string|*  $name
+ * @param   string|mixed  $name
  * @return  string
  */
 if ( ! \function_exists( __NAMESPACE__ . '\\tagname' ) ) {
-    function tagname ( $name = null ) {
+    function tagname ( $name ) {
         # allow: alphanumeric|underscore|colon
         return \is_string($name) ? \preg_replace( '/[^\w\:]/', '', $name ) : '';
     }
@@ -174,7 +173,7 @@ if ( ! \function_exists( __NAMESPACE__ . '\\tagname' ) ) {
 
 /**
  * Sanitize an html attribute name
- * @param   string|*  $name
+ * @param   string|mixed  $name
  * @return  string
  */
 if ( ! \function_exists( __NAMESPACE__ . '\\attname' ) ) {
@@ -191,28 +190,30 @@ if ( ! \function_exists( __NAMESPACE__ . '\\attname' ) ) {
 }
 
 /**
- * Convert an array into an attributes string. Null values are skipped. Boolean values
- * convert into boolean attrs. Other values encode via encode().
- * 
- * @param  array|string $name    An array of name/value pairs, or an ssv string of attr 
-                                 names, or an indexed array of attr names.
- * @param  mixed=       $value   Attr value for context when $name is an attribute name.
+ * Produce an attributes string. Null values are skipped. Boolean
+ * values convert to boolean attrs. Other values encode via encode().
+ * @param  mixed    $name   An array of name/value pairs, or an ssv string of attr 
+                            names, or an indexed array of attr names.
+ * @param  mixed    $value  Attr value for context when $name is an attribute name.
  */
 if ( ! \function_exists( __NAMESPACE__ . '\\attrs' ) ) {
     function attrs ( $name, $value = '' ) {
     
-        $array = array();
+        # "func args"
+        $name  and $name  = result($name);
+        $value and $value = result($value);
         
         # handle false boolean attrs | null names/values
         # dev.w3.org/html5/spec/common-microsyntaxes.html#boolean-attributes
-        if ( false === $value || null === $name || null === $value )
+        if ( null === $name || null === $value || false === $value )
             return '';
 
         # key/value map a.k.a. "array to attr"
         if ( ! \is_scalar($name) ) {
+            $arr = array();
             foreach ( $name as $k => $v )
-                ( $pair = attrs($k, $v) ) and $array[] = $pair;
-            return \implode( ' ', $array );
+                ( $pair = attrs($k, $v) ) and $arr[] = $pair;
+            return \implode( ' ', $arr );
         }
         
         # looped indexed arrays:
@@ -236,13 +237,13 @@ if ( ! \function_exists( __NAMESPACE__ . '\\attrs' ) ) {
             $name = attname( $name );
         }
         
-        # <p contenteditable> is the same as <p contenteditable="">
-        # skip attrs that had invalid names ($name sanitized to '')
+        # <p contenteditable> === <p contenteditable="">
+        # Skip attrs whose $name sanitized to ''
         # dev.w3.org/html5/spec/common-microsyntaxes.html#boolean-attributes
         if ( '' === $value || '' === $name || true === $value )
             return $name;
             
-        # use single quotes for compatibility with JSON
+        # Use single quotes for compatibility with JSON
         return $name . "='" . encode($value, $name) . "'";
     }
 }
@@ -252,7 +253,7 @@ if ( ! \function_exists( __NAMESPACE__ . '\\attrs' ) ) {
  * then the attrs on the first tag are parsed. This function uses a manual
  * loop to parse the attrs and is designed to be safer than using DOMDocument.
  *
- * @param    string|*   $attrs
+ * @param    string|mixed   $attrs
  * @return   array
  * @link     dev.airve.com/demo/speed_tests/php/parse_attrs.php
  *
@@ -336,28 +337,20 @@ if ( ! \function_exists( __NAMESPACE__ . '\\parse_attrs' ) ) {
 
 /**
  * Generate an html tag.
- * @param   string        $tagname
- * @param   array|string  $attrs
- * @param   string        $inner_html
+ * @param   Closure|string             $tagname
+ * @param   Closure|array|string|null  $attrs
+ * @param   Closure|string|null        $inner
  * @return  string
  */
 if ( ! \function_exists( __NAMESPACE__ . '\\tag' ) ) {
-    function tag ( $tagname = null, $attrs = null, $inner_html = null ) {
-
-        # allows args to be set at runtime
-        $tagname = tagname( invoke($tagname) );
+    function tag ( $tagname, $attrs = null, $inner = null ) {
+        $tagname = tagname( result($tagname) );
         if ( ! $tagname )
             return '';
-        $attrs = invoke($attrs);
-        $inner_html = invoke($inner_html);
-
-        # build the markup - close the tag only if it had inner html
-        $tag = '<' . $tagname;
-        $attrs = attrs($attrs);
-        $attrs and $tag .= ' ' . $attrs;
-        $tag .= '>';
-        null === $inner_html or $tag .= $inner_html . '</' . $tagname . '>';
-        return $tag;
+        $attrs and $attrs = attrs($attrs);
+        $tag = $attrs ? "<$tagname $attrs>" : "<$tagname>";
+        $inner and $inner = result($inner);
+        return null === $inner ? $tag : $tag . $inner . "</$tagname>";
     }
 }
 
