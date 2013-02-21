@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       ryanve/phat
- * @version       1.1.0
+ * @version       1.1.1
  * @license       MIT
  */
 
@@ -93,34 +93,25 @@ if ( ! \function_exists( __NAMESPACE__ . '\\token_explode' ) ) {
 }
 
 /**
- * An extendable hash for token types. ( See usage in encode()/decode() )
+ * An extendable hash for token types (ssv, csv, etc.)
+ * Get or set the $delimiter for the specified $name.
+ * @param   string       $name 
+ * @param   string=      $delimiter
+ * @return  string|null
  */
 if ( ! \function_exists( __NAMESPACE__ . '\\delimiter' ) ) {
-
-    function delimiter ( $name, $value = null ) {
-        static $hash; # php.net/manual/en/language.variables.scope.php
-        isset($hash) or $hash = array();
+    function delimiter ( $name, $delimiter = null ) {
+        static $hash;
+        isset( $hash ) or $hash = \array_merge(
+            # dev.w3.org/html5/spec-author-view/index.html#attributes-1
+            # whatwg.org/specs/web-apps/current-work/multipage/microdata.html#names:-the-itemprop-attribute
+            \array_fill_keys( \explode( '|', 'accept|media'), ',' ), #csv
+            \array_fill_keys( \explode( '|', 'class|rel|itemprop|accesskey|dropzone|headers|sizes|sandbox|accept-charset'), ' ' ) #ssv
+        );
         $name = \mb_strtolower( $name );
-        isset( $hash[$name] ) or ( \is_string($value) and $hash[$name] = $value );
+        isset( $hash[$name] ) or ( \is_string($delimiter) and $hash[$name] = $delimiter );
         return $hash[$name];
     }
-    
-    \call_user_func(function () {
-
-        # define delimiters
-        # dev.w3.org/html5/spec-author-view/index.html#attributes-1
-        # whatwg.org/specs/web-apps/current-work/multipage/microdata.html#names:-the-itemprop-attribute
-
-        $ssv = array('class', 'rel', 'itemprop', 'accesskey', 'dropzone', 'headers', 'sizes', 'sandbox', 'accept-charset');
-        $csv = array('accept', 'media');
-        
-        foreach ( $ssv as $name )
-            delimiter( $name, ' ' );
-
-        foreach ( $csv as $name )
-            delimiter( $name, ',' );
-
-    });
 }
 
 /**
