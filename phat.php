@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       ryanve/phat
- * @version       1.2.0
+ * @version       1.2.1
  * @license       MIT
  */
 
@@ -220,25 +220,17 @@ if ( ! \function_exists( __NAMESPACE__ . '\\attrs' ) ) {
         if ( \is_int($name) )
             return attrs($value);
 
-        # $name may need recursion and/or sanitization:
+        # Name may need parsing or sanitizing:
         if ( $name && ! \ctype_alnum($name) ) {
-            if ( \strpos( $name, '=' ) !== false )
-                # looks already stringified like `title=""`
-                # dirty syntax but make it work (ignoring $value)
+            if ( \preg_match( '#(\=|\s)#', $name ) )
+                # looks already stringified like `title=""` or `async defer`
                 return attrs( parse_attrs($name) );
 
-            if ( \count( $names = token_explode($name) ) > 1 )
-                # ssv names like `async defer`
-                # set all to the same value (defaults to '')
-                return attrs( \array_fill_keys( $names, $value ) );
-
-            # sanitize attr name (allow: alphanumeric, underscore, hyphen, period)
-            # stackoverflow.com/q/13283699/770127
-            $name = attname( $name );
+            $name = attname( $name ); # sanitize
         }
         
         # <p contenteditable> === <p contenteditable="">
-        # Skip attrs whose $name sanitized to ''
+        # Skip attrs whose name sanitized to ''
         # dev.w3.org/html5/spec/common-microsyntaxes.html#boolean-attributes
         if ( '' === $value || '' === $name || true === $value )
             return $name;
