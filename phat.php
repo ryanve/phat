@@ -86,10 +86,10 @@ abstract class Phat {
     }
     
     /**
-     * @param    mixed    $tokens
-     * @param    string=  $glue     defaults to ssv
+     * Join $tokens into a string. Deep implode.
+     * @param    array|mixed  $tokens
+     * @param    string       $glue     Defaults to SSV.
      * @return   string
-     * @link     dev.w3.org/html5/spec/common-microsyntaxes.html
      */
     public static function implode($tokens, $glue = ' ') {
         if ( \is_scalar($tokens))
@@ -106,7 +106,7 @@ abstract class Phat {
      * If $glue is an array then $tokens is split at any
      * of $glue's items. Otherwise $glue splits as a phrase.
      * @param    string|mixed   $tokens
-     * @param    string|array=  $glue    Defaults to ssv.                            
+     * @param    string|array=  $glue    Defaults to SSV.
      * @return   array
      */
     public static function explode($tokens, $glue = ' ') {
