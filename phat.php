@@ -38,7 +38,7 @@ abstract class Phat {
         if (static::$mixins[$name])
             return \call_user_func_array(static::$mixins[$name], $params);
         if ('_e' === \substr($name, -2) and $meth = \substr($name, 0, -2)) {
-            if (\is_callable($meth = self::method($meth)))
+            if (\is_callable($meth = __CLASS__ . "::$meth"))
                 echo \call_user_func_array($meth, $params);
         } else {
             \trigger_error(__CLASS__ . "::$name is not callable."); 
