@@ -1,43 +1,62 @@
-# [phat](http://phat.airve.com)
+# [phat](http://phat.airve.com) (v 2.0)
 
-PHP functions for HTML markup. 
+PHP HTML utility module.
 
-All functions live under the "phat" [namespace](http://php.net/manual/en/language.namespaces.php).
+`Phat` lives in the [`airve`](https://github.com/airve) [namespace](http://php.net/manual/en/language.namespaces.php). You can alias `Phat` locally via [`use`](http://php.net/manual/en/language.namespaces.importing.php):
 
-## gets
+```php
+use \airve\Phat;
 
-### `esc( $string )`
+echo Phat::tag('strong', array('class' => 'awesome'), 'It works');
+```
 
-Escape a string for use in html. Ensure that entities are not double encoded.
+**or:**
 
-### `tag( $tagname, $attrs, $inner_html )`
+```php
+use \airve\Phat as Html;
 
-Get an html tag. `$tagname` must be a string. `$attrs` can be a string or array. The tag is closed only if `$inner_html` is not `null`.
+echo Html::tag('strong', array('class' => 'awesome'), 'It works');
+```
 
-### `attrs( $attrs )`
+
+## methods
+
+### `Phat::tag($tagname, $attrs, $innerHTML)`
+
+Get an html tag. `$tagname` must be a string. `$attrs` can be a string or array. The tag is closed only if `$innerHTML` is not `null`.
+
+### `Phat::attrs($attrs)`
 
 Convert attributes into a properly encoded **string** for use in html. `$attrs` can be an array or string.
 
-### `parse_attrs( $attrs )`
+### `Phat::parseAttrs($attrs)`
 
 Convert attributes into an **array** for use in PHP.
 
-### `encode( $value )`
+### `Phat::esc($string)`
+
+Escape a string for use in html. Ensure that entities are not double encoded.
+
+### `Phat::encode($value)`
 
 Encode a value into a string for use in an html attribute. Uses `esc` or [`json_encode`](http://php.net/manual/en/function.json-encode.php) as needed.
 
-### `decode( $value )`
+### `Phat::decode($value)`
 
 Decode a value that was previously encoded via `encode` or [`json_encode`](http://php.net/manual/en/function.json-encode.php)
 
+### `Phat::method($name)`
+
+Get a fully-qualified method name. 
+
 ## echoes
 
-Functions suffixed with `_e` [echo](http://php.net/manual/en/function.echo.php) the result of the underlying function:
+Method suffixed with `_e` are overloaded to [echo](http://php.net/manual/en/function.echo.php) the result of the underlying function:
 
-### `esc_e( $string )`
+### `Phat::esc_e( $string )`
 
-### `encode_e( $value )`
+### `Phat::encode_e( $value )`
 
-### `tag_e( $tagname, $attrs, $inner_html )`
+### `Phat::tag_e( $tagname, $attrs, $inner_html )`
 
-### `attrs_e( $attrs )`
+### `Phat::attrs_e( $attrs )`
