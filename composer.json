@@ -20,9 +20,7 @@
         "php": ">=5.3"
     },
     "autoload": {
-        "psr-0": {
-            "airve\\": ""
-        }
+        "files": ["phat.php"]
     },
     "minimum-stability": "dev"
 }
