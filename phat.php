@@ -160,7 +160,7 @@ abstract class Phat {
             if ( ! $value) # null|array()
                 return $value === null ? 'null' : '';
             if ($value instanceof \Closure)
-                return encode($value(), $name);
+                return self::encode($value(), $name);
             if ($name && \is_string($d = self::delimiter($name)))
                 return self::encode(self::implode($value, $d));
         }
