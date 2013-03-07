@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.0.0
+ * @version       2.1.0
  * @license       MIT
  */
 
@@ -84,7 +84,7 @@ abstract class Phat {
         # prevent double-encoding entities:
         return \htmlentities($value, ENT_QUOTES, null, false);
     }
-    
+
     /**
      * Join $tokens into a string. Deep implode.
      * @param    array|mixed  $tokens
@@ -209,6 +209,16 @@ abstract class Phat {
             return '';
         $name = \preg_replace('/[^0-9\pL_.-]/', '', $name);
         return \preg_match('/^[\pL_]/', $name) ? $name : '';
+    }
+    
+    /**
+     * Replace or normalize whitespace.
+     * @param   string  $text
+     * @param   string  $replacement
+     * @return  string
+     */    
+    public static function respace($text, $replacement = ' ') {
+        return \preg_replace('#\s+#', $replacement, $text);
     }
     
     /**
