@@ -260,7 +260,6 @@ abstract class Phat {
         
         # <p contenteditable> === <p contenteditable="">
         # Skip attrs whose name sanitized to ''
-        # dev.w3.org/html5/spec/common-microsyntaxes.html#boolean-attributes
         if ('' === $value || '' === $name || true === $value)
             return $name;
         # Use single quotes for compatibility with JSON
