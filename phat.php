@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.1.1
+ * @version       2.1.2
  * @license       MIT
  */
 
