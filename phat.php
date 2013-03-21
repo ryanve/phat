@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.1.0
+ * @version       2.1.1
  * @license       MIT
  */
 
@@ -35,7 +35,7 @@ abstract class Phat {
     # php.net/manual/en/language.oop5.overloading.php#object.callstatic
     # methods suffixed with "_e" overload as echoers
     public static function __callStatic($name, $params) {
-        if (static::$mixins[$name])
+        if (isset(static::$mixins[$name]))
             return \call_user_func_array(static::$mixins[$name], $params);
         if ('_e' === \substr($name, -2) and $meth = \substr($name, 0, -2)) {
             if (\is_callable($meth = __CLASS__ . "::$meth"))
