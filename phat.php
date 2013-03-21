@@ -133,8 +133,12 @@ abstract class Phat {
         $hash = $hash ?: \array_merge(
             # dev.w3.org/html5/spec-author-view/index.html#attributes-1
             # whatwg.org/specs/web-apps/current-work/multipage/microdata.html#names:-the-itemprop-attribute
-            \array_fill_keys(\explode( '|', 'accept|media'), ','), #csv
-            \array_fill_keys(\explode( '|', 'class|rel|itemprop|accesskey|dropzone|headers|sizes|sandbox|accept-charset'), ' ') #ssv
+            \array_fill_keys(
+                \explode('|', 'accept|media')
+            , ','), #csv
+            \array_fill_keys(
+                \explode('|', 'class|rel|itemprop|accesskey|dropzone|headers|sizes|sandbox|accept-charset')
+            , ' ') #ssv
         );
         $name = \mb_strtolower($name);
         isset($hash[$name]) or (\is_string($delimiter) and $hash[$name] = $delimiter);
