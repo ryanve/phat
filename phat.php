@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.1.3
+ * @version       2.2.0
  * @license       MIT
  */
 
@@ -28,8 +28,7 @@ abstract class Phat {
      * @example array_map(Phat::method('esc'), $array)
      */
     public static function method($name) {
-        #return \is_callable($name = __CLASS__ . "::$name") ? $name : null;
-        return __CLASS__ . "::$name";
+        return \get_called_class() . "::$name";
     }
 
     # php.net/manual/en/language.oop5.overloading.php#object.callstatic
@@ -38,8 +37,8 @@ abstract class Phat {
         if (isset(static::$mixins[$name]))
             return \call_user_func_array(static::$mixins[$name], $params);
         if ('_e' === \substr($name, -2))
-            echo \call_user_func_array(__CLASS__ . '::' . \substr($name, 0, -2), $params);
-        else \trigger_error(__CLASS__ . "::$name is not callable.");
+            echo \call_user_func_array(static::method(\substr($name, 0, -2)), $params);
+        else \trigger_error(\get_called_class() . "::$name is not callable.");
     }
     
     /**
