@@ -1,4 +1,4 @@
-# [phat](http://phat.airve.com) (v 2.0)
+# [phat](http://phat.airve.com) (v 2.2)
 
 PHP HTML utility module.
 
