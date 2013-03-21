@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.1.2
+ * @version       2.1.3
  * @license       MIT
  */
 
@@ -18,7 +18,7 @@ abstract class Phat {
         if ( \is_scalar($name))
             $fn and static::$mixins[$name] = $fn;
         else foreach ($name as $k => $v)
-            static::mixin($k, $v);
+            self::mixin($k, $v);
     }
     
     /**
@@ -89,7 +89,7 @@ abstract class Phat {
      * @return   string
      */
     public static function implode($tokens, $glue = ' ') {
-        if ( \is_scalar($tokens))
+        if (\is_scalar($tokens))
             return \trim($tokens);
         if ( ! $tokens)
             return '';
