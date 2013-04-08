@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.3.0
+ * @version       2.3.1
  * @license       MIT
  */
 
@@ -272,10 +272,10 @@ class Phat {
         
         # <p contenteditable> === <p contenteditable="">
         # Skip attrs whose name sanitized to ''
-        if ('' === $value || '' === $name || true === $value)
-            return $name;
         # Use single quotes for compatibility with JSON
-        return $name . "='" . self::encode($value, $name) . "'";
+        return '' === $value || '' === $name || true === $value || (
+            '' === ($value = self::encode($value, $name))
+        ) ? $name : $name . "='" . $value . "'";
     }
     
     /**
