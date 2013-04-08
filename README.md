@@ -22,9 +22,9 @@ echo Html::tag('strong', array('class' => 'awesome'), 'It works');
 
 ## methods
 
-### `Phat::tag($tagname, $attrs, $innerHTML)`
+### `Phat::tag($tagname, $attrs, $inner)`
 
-Get an html tag. `$tagname` must be a string. `$attrs` can be a string or array. The tag is closed only if `$innerHTML` is not `null`.
+Get an html tag. `$tagname` must be a string. `$attrs` can be a string or array. The tag is closed only if `$inner` is not `null`.
 
 ### `Phat::attrs($attrs)`
 
@@ -54,10 +54,10 @@ Get a fully-qualified method name.
 
 Method suffixed with `_e` are overloaded to [echo](http://php.net/manual/en/function.echo.php) the result of the underlying function:
 
-### `Phat::esc_e( $string )`
+### `Phat::esc_e($string)`
 
-### `Phat::encode_e( $value )`
+### `Phat::encode_e($value)`
 
-### `Phat::tag_e( $tagname, $attrs, $inner_html )`
+### `Phat::tag_e($tagname, $attrs, $inner_html)`
 
-### `Phat::attrs_e( $attrs )`
+### `Phat::attrs_e($attrs)`
