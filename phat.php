@@ -4,13 +4,13 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.2.x
+ * @version       2.3.0
  * @license       MIT
  */
 
 namespace airve;
 
-abstract class Phat {
+class Phat {
 
     protected static $mixins = array();
 
@@ -213,6 +213,7 @@ abstract class Phat {
     
     /**
      * Replace or normalize whitespace.
+     * @since   2.1.0
      * @param   string  $text
      * @param   string  $replacement
      * @return  string
@@ -223,6 +224,7 @@ abstract class Phat {
 
     /**
      * Replace or normalize linebreaks.
+     * @since   2.3.0
      * @param   string  $text
      * @param   string  $replacement
      * @return  string
