@@ -284,10 +284,10 @@ class Phat {
      * loop to parse the attrs and is designed to be safer than using DOMDocument.
      * @param    string|mixed   $attrs
      * @return   array
-     * @example  parseAttrs( 'src="example.jpg" alt="example"' )
-     * @example  parseAttrs( '<img src="example.jpg" alt="example">' )
-     * @example  parseAttrs( '<a href="example"></a>' )
-     * @example  parseAttrs( '<a href="example">' )
+     * @example  parseAttrs('src="example.jpg" alt="example"')
+     * @example  parseAttrs('<img src="example.jpg" alt="example">')
+     * @example  parseAttrs('<a href="example"></a>')
+     * @example  parseAttrs('<a href="example">')
      */
     public static function parseAttrs($attrs) {
         if ( ! \is_scalar($attrs))
