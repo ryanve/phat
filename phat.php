@@ -392,5 +392,3 @@ class Phat {
     }
 
 }#class
-
-#end
