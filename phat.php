@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.2.0
+ * @version       2.2.x
  * @license       MIT
  */
 
@@ -216,9 +216,19 @@ abstract class Phat {
      * @param   string  $text
      * @param   string  $replacement
      * @return  string
-     */    
+     */
     public static function respace($text, $replacement = ' ') {
         return \preg_replace('#\s+#', $replacement, $text);
+    }
+
+    /**
+     * Replace or normalize linebreaks.
+     * @param   string  $text
+     * @param   string  $replacement
+     * @return  string
+     */
+    public static function rebreak($text, $replacement = "\n\n") {
+        return \preg_replace('#\n+\s*\n+#', $replacement, $text);
     }
     
     /**
