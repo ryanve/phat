@@ -1,6 +1,8 @@
-# [phat](http://phat.airve.com) (v 2.2)
+# [phat](http://phat.airve.com) (v 2.3)
 
 PHP HTML utility module.
+
+**@package**: [airve/phat](https://packagist.org/packages/airve/phat)
 
 `Phat` lives in the [`airve`](https://github.com/airve) [namespace](http://php.net/manual/en/language.namespaces.php). You can alias `Phat` locally via [`use`](http://php.net/manual/en/language.namespaces.importing.php):
 
@@ -17,7 +19,6 @@ use \airve\Phat as Html;
 
 echo Html::tag('strong', array('class' => 'awesome'), 'It works');
 ```
-
 
 ## methods
 
