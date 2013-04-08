@@ -315,8 +315,8 @@ class Phat {
                     break; 
                 } elseif ( ! \ctype_space($curr)) {
                     if (\ctype_space($attrs[$j-1])) { # previous char
-                        '' === $name or $arr[$name] = '';   # previous name
-                        $name = $curr;                        # initiate new
+                        '' === $name or $arr[$name] = ''; # previous name
+                        $name = $curr;                    # initiate new
                     } else {
                         $name .= $curr;
                     }
