@@ -357,7 +357,7 @@ class Phat {
     
     /**
      * Parse markup (or an array of nodes) into a DOMDocument object
-     * @param   DOMDocument|string|array   $html
+     * @param   DOMDocument|Closure|string|array   $html
      * @return  DOMDocument
      */
     public static function dom($html = false) {
