@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.3.1
+ * @version       2.3.2
  * @license       MIT
  */
 
@@ -362,15 +362,12 @@ class Phat {
      */
     public static function dom($html) {
         $source = null;
-        if (\is_object($html)) {
-            \method_exists($html, 'saveHtml') 
-                ? ($html = $html->saveHtml())
-                : ($source = $html);
-        } elseif (\is_array($html)) {
+        if (\is_object($html))
+            \method_exists($html, 'saveHtml') ? $html = $html->saveHtml() : $source = $html;
+        elseif (\is_array($html))
             $source = $html; # array of nodes
-        } elseif ( ! \is_string($html)) {
+        elseif ( ! \is_string($html))
             return new \DOMDocument;
-        }
 
         if (null === $source) {
             $typed = \preg_match('/^\<\!doctype\s/i', $html);
