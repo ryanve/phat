@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.3.2
+ * @version       2.3.3
  * @license       MIT
  */
 
@@ -356,36 +356,37 @@ class Phat {
     }
     
     /**
-     * experimental function for parsing markup into a DOMDocument object
+     * Parse markup (or an array of nodes) into a DOMDocument object
      * @param   DOMDocument|string|array   $html
      * @return  DOMDocument
      */
     public static function dom($html) {
         $source = null;
-        if (\is_object($html))
-            \method_exists($html, 'saveHtml') ? $html = $html->saveHtml() : $source = $html;
-        elseif (\is_array($html))
-            $source = $html; # array of nodes
+        if ( ! \is_scalar($html))
+            \is_callable(array($html, 'saveHtml')) ? $html = $html->saveHtml() : $source = $html;
         elseif ( ! \is_string($html))
             return new \DOMDocument;
 
         if (null === $source) {
-            $typed = \preg_match('/^\<\!doctype\s/i', $html);
-            if ( ! $typed && \preg_match('/^\<html\s/i', $html))
-                $typed = !!($html = '<!DOCTYPE html>' . $html);
             $source = new \DOMDocument;
+            $html = \trim($html);
+            if ('' === $html)
+                return $source;
+            $hasDoctype = \preg_match('/^\<\!doctype\s/i', $html);
+            if ( ! $hasDoctype and $hasDoctype = \preg_match('/^\<html\s/i', $html))
+                $html = '<!DOCTYPE html>' . $html;
             $source->loadHtml($html);
-            if ($typed || $source->saveHtml() === $html)
+            if ($hasDoctype || $source->saveHtml() === $html)
                 return $source;
             $source = $source->getElementsByTagName('*')->item(0)->childNodes;
             if ( ! \preg_match('/^(\<body|\<head)\s/i', $html))
                 $source = $source->item(0)->childNodes;
         }
 
-        $output = new \DOMDocument;
+        $html = new \DOMDocument; # repurpose
         foreach ($source as $i => $node)
-            $output->appendChild($output->importNode($node, true));
-        return $output;
+            $html->appendChild($html->importNode($node, true));
+        return $html;
     }
 
 }#class
