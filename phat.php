@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.3.8
+ * @version       2.3.9
  * @license       MIT
  */
 
@@ -263,7 +263,7 @@ class Phat {
             return self::attrs($value);
 
         # Name may need parsing or sanitizing:
-        if ($name && ! \ctype_alnum($name)) {
+        if ($name && ! \ctype_alpha($name)) {
             if (\preg_match('#(\=|\s)#', $name))
                 # looks already stringified like `title=""` or `async defer`
                 return self::attrs(self::parseAttrs($name));
