@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.3.4
+ * @version       2.3.5
  * @license       MIT
  */
 
@@ -372,14 +372,15 @@ class Phat {
             $html = \trim($html);
             if ('' === $html)
                 return $source;
-            $hasDoctype = \preg_match('/^\<\!doctype\s/i', $html);
-            if ( ! $hasDoctype and $hasDoctype = \preg_match('/^\<html\s/i', $html))
-                $html = '<!DOCTYPE html>' . $html;
+            $type = \strtolower(\substr($html, 0, 5));
+            if ('<html' === $type)
+                $html = '<!DOCTYPE html>' . "\n" . $html;
+            else $type = '<!doc' === $type ? $type : false;
             $source->loadHtml($html);
-            if ($hasDoctype || $source->saveHtml() === $html)
+            if ($type || $source->saveHtml() === $html)
                 return $source;
             $source = $source->getElementsByTagName('*')->item(0)->childNodes;
-            if ( ! \preg_match('/^(\<body|\<head)\s/i', $html))
+            if ('<body' !== $type && '<head' !== $type)
                 $source = $source->item(0)->childNodes;
         }
 
