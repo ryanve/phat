@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.3.5
+ * @version       2.3.6
  * @license       MIT
  */
 
@@ -376,7 +376,9 @@ class Phat {
             if ('<html' === $type)
                 $html = '<!DOCTYPE html>' . "\n" . $html;
             else $type = '<!doc' === $type ? $type : false;
+            libxml_use_internal_errors(true);
             $source->loadHtml($html);
+            libxml_clear_errors();
             if ($type || $source->saveHtml() === $html)
                 return $source;
             $source = $source->getElementsByTagName('*')->item(0)->childNodes;
