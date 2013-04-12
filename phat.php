@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.3.3
+ * @version       2.3.4
  * @license       MIT
  */
 
@@ -360,7 +360,7 @@ class Phat {
      * @param   DOMDocument|string|array   $html
      * @return  DOMDocument
      */
-    public static function dom($html) {
+    public static function dom($html = false) {
         $source = null;
         if ( ! \is_scalar($html))
             \is_callable(array($html, 'saveHtml')) ? $html = $html->saveHtml() : $source = $html;
