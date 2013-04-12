@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.3.6
+ * @version       2.3.7
  * @license       MIT
  */
 
@@ -362,6 +362,7 @@ class Phat {
      */
     public static function dom($html = false) {
         $source = null;
+        $html and $html = self::result($html);
         if ( ! \is_scalar($html))
             \is_callable(array($html, 'saveHtml')) ? $html = $html->saveHtml() : $source = $html;
         elseif ( ! \is_string($html))
@@ -375,14 +376,17 @@ class Phat {
             $type = \strtolower(\substr($html, 0, 5));
             if ('<html' === $type)
                 $html = '<!DOCTYPE html>' . "\n" . $html;
-            else $type = '<!doc' === $type ? $type : false;
-            libxml_use_internal_errors(true);
+            \libxml_use_internal_errors(true);
             $source->loadHtml($html);
-            libxml_clear_errors();
-            if ($type || $source->saveHtml() === $html)
+            \libxml_clear_errors();
+            if ('<!doc' === $type || '<html' === $type)
                 return $source;
+            $save = $source->saveHtml();
+            if ($save === $html)
+                return $source;
+            $save = \strtolower(\substr($save, 0, 5));
             $source = $source->getElementsByTagName('*')->item(0)->childNodes;
-            if ('<body' !== $type && '<head' !== $type)
+            if ($save !== $type && '<body' !== $type && '<head' !== $type)
                 $source = $source->item(0)->childNodes;
         }
 
