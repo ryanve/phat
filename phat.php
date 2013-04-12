@@ -192,7 +192,7 @@ class Phat {
      */
     protected static function tagname($name) {
         # allow: alphanumeric|underscore|colon
-        return \is_string($name) ? \preg_replace('/[^\w\:]/', '', $name) : '';
+        return \is_string($name) ? \preg_replace('#[^\w:]#', '', $name) : '';
     }
     
     /**
