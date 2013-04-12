@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.3.7
+ * @version       2.3.8
  * @license       MIT
  */
 
@@ -166,7 +166,7 @@ class Phat {
         }
 
         $value = \json_encode($value); # array|object|number|boolean
-        return $scalar ? $value : encode($value);
+        return $scalar ? $value : self::encode($value);
     }
 
     /**
