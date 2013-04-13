@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.3.9
+ * @version       2.4.0
  * @license       MIT
  */
 
@@ -186,37 +186,38 @@ class Phat {
     }
     
     /**
-     * Sanitize an HTML or XML tagName
-     * @param   string|mixed  $name
-     * @return  string
+     * Sanitize an HTML or XML tag name. Or read the tagname of a tag.
+     * @param   mixed         $name
+     * @return  string|array
      */
-    protected static function tagname($name) {
-        # allow: alphanumeric|underscore|colon
-        return \is_string($name) ? \preg_replace('#[^\w:]#', '', $name) : '';
+    public static function tagname($name) {
+        # w3.org/TR/html-markup/syntax.html#tag-name
+        # w3.org/TR/REC-xml/#NT-Name
+        # allow: alphanumeric|underscore|colon|period|hyphen
+        return \preg_replace('#[^\w:.-]*([\w:.-]*)[\s>]*.*#', '$1', $name);
     }
     
     /**
-     * Sanitize an HTML attribute name
-     * @param   string|mixed  $name
-     * @return  string
+     * Sanitize an HTML or XML attribute name.
+     * @param   mixed          $name
+     * @return  string|array
      */
-    protected static function attname($name) {
-        # allow: alphanumeric, underscore, hyphen, period
-        # must start with letter or underscore
+    public static function attname($name) {
         # stackoverflow.com/q/13283699/770127
         # w3.org/TR/html-markup/syntax.html#syntax-attributes
-        if ( ! \is_string($name))
-            return '';
-        $name = \preg_replace('/[^0-9\pL_.-]/', '', $name);
-        return \preg_match('/^[\pL_]/', $name) ? $name : '';
+        # w3.org/TR/REC-xml/#NT-Attribute
+        # php.net/manual/en/regexp.reference.unicode.php
+        # should start with letter (or underscore|colon in xml) but not enforced here
+        # allow: unicode letters|digits|underscore|colon|period|hyphen
+        return \preg_replace(array('#[=>].*#', '#[^\pL\d_:.-]*#'), '', $name);
     }
     
     /**
      * Replace or normalize whitespace.
      * @since   2.1.0
-     * @param   string  $text
+     * @param   mixed   $text
      * @param   string  $replacement
-     * @return  string
+     * @return  string|array
      */
     public static function respace($text, $replacement = ' ') {
         return \preg_replace('#\s+#', $replacement, $text);
@@ -225,9 +226,9 @@ class Phat {
     /**
      * Replace or normalize linebreaks.
      * @since   2.3.0
-     * @param   string  $text
+     * @param   mixed   $text
      * @param   string  $replacement
-     * @return  string
+     * @return  string|array
      */
     public static function rebreak($text, $replacement = "\n\n") {
         return \preg_replace('#\n+\s*\n+#', $replacement, $text);
