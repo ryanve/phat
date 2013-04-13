@@ -194,7 +194,7 @@ class Phat {
         # w3.org/TR/html-markup/syntax.html#tag-name
         # w3.org/TR/REC-xml/#NT-Name
         # allow: alphanumeric|underscore|colon|period|hyphen
-        return \preg_replace('#[^\w:.-]*([\w:.-]*)[\s>]*.*#', '$1', $name);
+        return \preg_replace('#\s*<*([\w:.-]*).*#', '$1', $name);
     }
     
     /**
