@@ -235,8 +235,8 @@ class Phat {
     }
     
     /**
-     * Produce an attributes string. Null values are skipped. Boolean
-     * values convert to boolean attrs. Other values encode via encode().
+     * Produce an attributes string. Null values are skipped. Booleans
+     * convert properly to boolean attrs. Other values encode via ::encode().
      * @param  mixed    $name   An array of name/value pairs, or an ssv string of attr 
                                 names, or an indexed array of attr names.
      * @param  mixed    $value  Attr value for context when $name is an attribute name.
@@ -246,7 +246,7 @@ class Phat {
         $name  and $name  = self::result($name);
         $value and $value = self::result($value);
         
-        # handle false boolean attrs | null names/values
+        # false boolean attrs | null names/values
         # dev.w3.org/html5/spec/common-microsyntaxes.html#boolean-attributes
         if (null === $name || null === $value || false === $value)
             return '';
@@ -281,8 +281,8 @@ class Phat {
     
     /**
      * Parse a string of attributes into an array. If the string starts with a tag,
-     * then the attrs on the first tag are parsed. This function uses a manual
-     * loop to parse the attrs and is designed to be safer than using DOMDocument.
+     * then the attrs on the first tag are parsed. It uses a safe reliable loop
+     * rather than risking errors via DOMDocument.
      * @param    string|mixed   $attrs
      * @return   array
      * @example  parseAttrs('src="example.jpg" alt="example"')
