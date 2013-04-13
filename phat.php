@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.4.1
+ * @version       2.4.2
  * @license       MIT
  */
 
@@ -265,7 +265,7 @@ class Phat {
         if ( ! \is_scalar($name)) {
             $value = array();
             foreach ($name as $k => $v)
-                ($pair = self::attrs($k, $v)) and $value[] = $pair;
+                \strlen($pair = self::attrs($k, $v)) and $value[] = $pair;
             return \implode(' ', $value);
         }
         
