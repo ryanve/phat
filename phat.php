@@ -294,10 +294,8 @@ class Phat {
         if ( ! \is_scalar($attrs))
             return (array) $attrs;
 
-        $attrs = \str_split(\trim($attrs));
-        if ('<' === $attrs[0]) # looks like a tag so strip the tagname
-            while ( $attrs && ! \ctype_space($attrs[0]) && $attrs[0] !== '>' )
-                \array_shift($attrs);
+        # trim, then strip tagname (if present), then split into array
+        $attrs = \str_split(\preg_replace('#^<+\S*#', '', \trim($attrs)));
 
         $arr = array(); # output
         $name = '';     # for the current attr being parsed
