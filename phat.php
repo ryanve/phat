@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.4.0
+ * @version       2.4.1
  * @license       MIT
  */
 
@@ -74,11 +74,11 @@ class Phat {
      * @param   string  $value
      * @return  string
      */
-    public static function esc($value) {
+    public static function esc($value, $flag = ENT_QUOTES) {
         if ( !($value = (string) $value))
             return $value;
         # prevent double-encoding entities:
-        return \htmlentities($value, ENT_QUOTES, null, false);
+        return \htmlentities($value, $flag, null, false);
     }
 
     /**
@@ -146,27 +146,29 @@ class Phat {
     }
     
     /**
-     * @param   mixed        $value
-     * @param   string|null  $name
+     * @param   mixed        $value     value to encode
+     * @param   string|null  $name      optional attribute name
+     * @param   bool         $retain    whether to keep null|bool values as is
      * @return  string
      */
-    public static function encode($value, $name = null) {
+    public static function encode($value, $name = null, $retain = null) {
 
-        if (\is_string($value)) {
-            $value and $value = \htmlentities($value, ENT_NOQUOTES, null, false);
-            return \str_replace("'", '&apos;', $value);
-        }
-        if ( !($scalar = \is_scalar($value))) {
-            if ( ! $value) # null|array()
-                return $value === null ? 'null' : '';
+        if (\is_string($value))
+            return \str_replace("'", '&apos;', $value ? self::esc($value, ENT_NOQUOTES) : $value);
+
+        $retain = true === $retain;
+        if ( ! \is_scalar($value)) {
+            if ( ! $value)
+                return null === $value ? $retain ? null : 'null' : '';
             if ($value instanceof \Closure)
-                return self::encode($value(), $name);
+                return self::encode($value(), $name, $retain);
             if ($name && \is_string($d = self::delimiter($name)))
                 return self::encode(self::implode($value, $d));
         }
 
-        $value = \json_encode($value); # array|object|number|boolean
-        return $scalar ? $value : self::encode($value);
+        return $retain && \in_array($value, array(false, true, null)) ? $value : (
+            \str_replace("'", '&apos;', \json_encode($value)) # stringify bool|number|array|object
+        );
     }
 
     /**
@@ -242,41 +244,36 @@ class Phat {
      * @param  mixed    $value  Attr value for context when $name is an attribute name.
      */
     public static function attrs($name, $value = '') {
-        # "func args"
-        $name  and $name  = self::result($name);
-        $value and $value = self::result($value);
+
+        # non-assoc recursion
+        \is_int($name) and ($name = $value) === ($value = '');
+
+        # func args
+        $name and $name = self::result($name); 
         
         # false boolean attrs | null names/values
         # dev.w3.org/html5/spec/common-microsyntaxes.html#boolean-attributes
-        if (null === $name || null === $value || false === $value)
+        if (false === $value || null === $value || null === $name || \is_bool($name))
             return '';
 
+        # Name may need parsing or sanitizing:
+        if (\is_scalar($name) && ($name = \trim($name)) && \ctype_alpha($name))
+            # parse if it looks already stringified like `title=""` or `async defer`
+            $name = \preg_match('#(\=|\s)#', $name) ? self::parseAttrs($name) : self::attname($name);
+        
         # key/value map a.k.a. "array to attr"
         if ( ! \is_scalar($name)) {
-            $arr = array();
+            $value = array();
             foreach ($name as $k => $v)
-                ($pair = self::attrs($k, $v)) and $arr[] = $pair;
-            return \implode(' ', $arr);
-        }
-
-        # looped indexed arrays:
-        if (\is_int($name))
-            return self::attrs($value);
-
-        # Name may need parsing or sanitizing:
-        if ($name && ! \ctype_alpha($name)) {
-            if (\preg_match('#(\=|\s)#', $name))
-                # looks already stringified like `title=""` or `async defer`
-                return self::attrs(self::parseAttrs($name));
-            $name = self::attname($name); # sanitize
+                ($pair = self::attrs($k, $v)) and $value[] = $pair;
+            return \implode(' ', $value);
         }
         
         # <p contenteditable> === <p contenteditable="">
-        # Skip attrs whose name sanitized to ''
         # Use single quotes for compatibility with JSON
-        return '' === $value || '' === $name || true === $value || (
-            '' === ($value = self::encode($value, $name))
-        ) ? $name : $name . "='" . $value . "'";
+        return '' === $value || true === $value || '' === $name || (
+            true === ($value = self::encode($value, $name)) || '' === $value
+        ) ? $name : (false === $value || null === $value ? '' : "$name='$value'");
     }
     
     /**
