@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.4.2
+ * @version       2.4.3
  * @license       MIT
  */
 
@@ -82,9 +82,9 @@ class Phat {
     }
 
     /**
-     * Join $tokens into a string. Deep implode.
+     * Deep implode.
      * @param    array|mixed  $tokens
-     * @param    string       $glue     Defaults to SSV.
+     * @param    string       $glue     Defaults to a space.
      * @return   string
      */
     public static function implode($tokens, $glue = ' ') {
@@ -93,8 +93,8 @@ class Phat {
         if ( ! $tokens)
             return '';
         $ret = array();
-        foreach ($tokens as $v) # flatten
-            $ret[] = self::implode($v);
+        foreach ($tokens as $v)
+            $ret[] = self::implode($v, $glue); # flatten
         return \implode($glue, $ret);
     }
     
