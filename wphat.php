@@ -123,7 +123,7 @@ function wp_attr_encode($value, $name = null) {
     return json_encode($value);
 }
 
-function wp_attr_decode( $value, $name = null ) {
+function wp_attr_decode($value, $name = null) {
     if ( ! $value || ! is_string($value))
         return $value;
 
@@ -221,7 +221,7 @@ function wp_attr_parse($attr) {
                 '' === $name or $arr[$name] = $value;
                 break; 
             } elseif ( ! ctype_space($curr)) {
-                if (ctype_space($attr[$j-1])) {      // previous char
+                if (ctype_space($attr[$j-1])) {       // previous char
                     '' === $name or $arr[$name] = ''; // previous name
                     $name = $curr;                    // initiate new
                 } else {

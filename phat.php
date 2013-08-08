@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.4.3
+ * @version       2.5.0-0
  * @license       MIT
  */
 
@@ -15,10 +15,8 @@ class Phat {
     protected static $mixins = array();
 
     public static function mixin($name, $fn = null) {
-        if ( \is_scalar($name))
-            $fn and static::$mixins[$name] = $fn;
-        else foreach ($name as $k => $v)
-            self::mixin($k, $v);
+        if (\is_scalar($name)) $fn and static::$mixins[$name] = $fn;
+        else foreach ($name as $k => $v) self::mixin($k, $v);
     }
     
     /**
@@ -61,8 +59,7 @@ class Phat {
      */
     public static function tag($tagname, $attrs = null, $inner = null) {
         $tagname = self::tagname(self::result($tagname));
-        if ( ! $tagname)
-            return '';
+        if ( ! $tagname) return '';
         $attrs and $attrs = self::attrs($attrs);
         $tag = $attrs ? "<$tagname $attrs>" : "<$tagname>";
         $inner and $inner = self::result($inner);
@@ -75,10 +72,8 @@ class Phat {
      * @return  string
      */
     public static function esc($value, $flag = ENT_QUOTES) {
-        if ( !($value = (string) $value))
-            return $value;
-        # prevent double-encoding entities:
-        return \htmlentities($value, $flag, null, false);
+        # Prevent double-encoding entities.
+        return ($value = (string) $value) ? \htmlentities($value, $flag, null, false) : $value;
     }
 
     /**
@@ -88,10 +83,8 @@ class Phat {
      * @return   string
      */
     public static function implode($tokens, $glue = ' ') {
-        if (\is_scalar($tokens))
-            return \trim($tokens);
-        if ( ! $tokens)
-            return '';
+        if (\is_scalar($tokens)) return \trim($tokens);
+        if ( ! $tokens) return '';
         $ret = array();
         foreach ($tokens as $v)
             $ret[] = self::implode($v, $glue); # flatten
@@ -106,17 +99,11 @@ class Phat {
      * @return   array
      */
     public static function explode($tokens, $glue = ' ') {
-
-        if (\is_string($tokens))
-            $tokens = \trim($tokens);
-        elseif (\is_scalar($tokens))
-            return (array) $tokens;
+        if (\is_string($tokens)) $tokens = \trim($tokens);
+        elseif (\is_scalar($tokens)) return (array) $tokens;
         else $tokens = self::implode(\is_array($glue) ? $glue[0] : $glue, $tokens);
-
-        # could be empty after 1st or 3rd condition above
-        if ('' === $tokens)
-            return array(); 
-        # normalize multiple delims into 1
+        if ('' === $tokens) return array(); # applicable to 1st or 3rd condition above
+        # Normalize multiple delims into 1
         \is_array($glue) and $tokens = \str_replace($glue, $glue = $glue[0], $tokens);
         return \ctype_space($glue) ? \preg_split('#\s+#', $tokens) : \explode($glue, $tokens);
     }
@@ -129,16 +116,14 @@ class Phat {
      * @return  string|null
      */
     protected static function delimiter($name, $delimiter = null) {
+        # dev.w3.org/html5/spec-author-view/index.html#attributes-1
+        # whatwg.org/specs/web-apps/current-work/multipage/microdata.html#names:-the-itemprop-attribute
         static $hash;
-        $hash = $hash ?: \array_merge(
-            # dev.w3.org/html5/spec-author-view/index.html#attributes-1
-            # whatwg.org/specs/web-apps/current-work/multipage/microdata.html#names:-the-itemprop-attribute
-            \array_fill_keys(
-                \explode('|', 'accept|media')
-            , ','), #csv
+        $hash or $hash = \array_merge(
+            \array_fill_keys(\explode('|', 'accept|media'), ','),
             \array_fill_keys(
                 \explode('|', 'class|rel|itemprop|accesskey|dropzone|headers|sizes|sandbox|accept-charset')
-            , ' ') #ssv
+            , ' ')
         );
         $name = \mb_strtolower($name);
         isset($hash[$name]) or (\is_string($delimiter) and $hash[$name] = $delimiter);
@@ -152,7 +137,6 @@ class Phat {
      * @return  string
      */
     public static function encode($value, $name = null, $retain = null) {
-
         if (\is_string($value))
             return \str_replace("'", '&apos;', $value ? self::esc($value, ENT_NOQUOTES) : $value);
 
@@ -244,7 +228,6 @@ class Phat {
      * @param  mixed    $value  Attr value for context when $name is an attribute name.
      */
     public static function attrs($name, $value = '') {
-
         # non-assoc recursion
         \is_int($name) and ($name = $value) === ($value = '');
 
@@ -390,6 +373,44 @@ class Phat {
         foreach ($source as $i => $node)
             $html->appendChild($html->importNode($node, true));
         return $html;
+    }
+    
+    /**
+     * @since   2.5.0-0
+     * @param   string        $html
+     * @param   string|array  $tags  whitelist
+     * @return  string
+     */
+    public static function keep($html, $tags = null) {
+        if ( ! $html) return \is_numeric($html) ? (string) $html : '';
+        \is_scalar($html) or $html = static::dom($html)->saveHTML();
+        return \strip_tags($html, \array_reduce(static::explode($tags), function($kept, $tag) {
+            return \strlen($tag = \trim($tag, '</>')) ? "$kept<$tag>" : $kept;
+        }, ''));
+    }
+    
+    /**
+     * @since   2.5.0-0
+     * @param   string        $html
+     * @param   string|array  $tags  blacklist
+     * @return  string
+     */
+    public static function ban($html, $tags = null) {
+        $tags = static::explode($tags);
+        $html = static::dom($html);
+        foreach ($tags as $tag)
+            foreach ($html->getElementsByTagName(\trim($tag, '</>')) as $node)
+                $node->parentNode->removeChild($node);
+        return $html->saveHTML();
+    }
+    
+    /**
+     * @since   2.5.0-0
+     * @param   string $html
+     * @return  string
+     */
+    public static function cdata($html) {
+        return "<![CDATA[$html]]>";
     }
 
 }#class
