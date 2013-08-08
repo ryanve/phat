@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.5.0-0
+ * @version       2.5.0-1
  * @license       MIT
  */
 
@@ -12,7 +12,8 @@ namespace airve;
 
 class Phat {
 
-    protected static $mixins = array();
+    # Alias via mixins.
+    protected static $mixins = array('attrs' => array(__CLASS__, 'atts'), 'parseAttrs' => array(__CLASS__, 'parseAtts'));
 
     public static function mixin($name, $fn = null) {
         if (\is_scalar($name)) $fn and static::$mixins[$name] = $fn;
@@ -53,15 +54,15 @@ class Phat {
     /**
      * Generate an HTML tag.
      * @param   Closure|string             $tagname
-     * @param   Closure|array|string|null  $attrs
+     * @param   Closure|array|string|null  $atts
      * @param   Closure|string|null        $inner
      * @return  string
      */
-    public static function tag($tagname, $attrs = null, $inner = null) {
+    public static function tag($tagname, $atts = null, $inner = null) {
         $tagname = self::tagname(self::result($tagname));
         if ( ! $tagname) return '';
-        $attrs and $attrs = self::attrs($attrs);
-        $tag = $attrs ? "<$tagname $attrs>" : "<$tagname>";
+        $atts and $atts = self::atts($atts);
+        $tag = $atts ? "<$tagname $atts>" : "<$tagname>";
         $inner and $inner = self::result($inner);
         return null === $inner ? $tag : $tag . $inner . "</$tagname>";
     }
@@ -222,19 +223,19 @@ class Phat {
     
     /**
      * Produce an attributes string. Null values are skipped. Booleans
-     * convert properly to boolean attrs. Other values encode via ::encode().
+     * convert properly to boolean atts. Other values encode via ::encode().
      * @param  mixed    $name   An array of name/value pairs, or an ssv string of attr 
                                 names, or an indexed array of attr names.
      * @param  mixed    $value  Attr value for context when $name is an attribute name.
      */
-    public static function attrs($name, $value = '') {
+    public static function atts($name, $value = '') {
         # non-assoc recursion
         \is_int($name) and ($name = $value) === ($value = '');
 
         # func args
         $name and $name = self::result($name); 
         
-        # false boolean attrs | null names/values
+        # false boolean atts | null names/values
         # dev.w3.org/html5/spec/common-microsyntaxes.html#boolean-attributes
         if (false === $value || null === $value || null === $name || \is_bool($name))
             return '';
@@ -242,13 +243,13 @@ class Phat {
         # Name may need parsing or sanitizing:
         if (\is_scalar($name) && ($name = \trim($name)) && \ctype_alpha($name))
             # parse if it looks already stringified like `title=""` or `async defer`
-            $name = \preg_match('#(\=|\s)#', $name) ? self::parseAttrs($name) : self::attname($name);
+            $name = \preg_match('#(\=|\s)#', $name) ? self::parseAtts($name) : self::attname($name);
         
         # key/value map a.k.a. "array to attr"
         if ( ! \is_scalar($name)) {
             $value = array();
             foreach ($name as $k => $v)
-                \strlen($pair = self::attrs($k, $v)) and $value[] = $pair;
+                \strlen($pair = self::atts($k, $v)) and $value[] = $pair;
             return \implode(' ', $value);
         }
         
@@ -261,21 +262,21 @@ class Phat {
     
     /**
      * Parse a string of attributes into an array. If the string starts with a tag,
-     * then the attrs on the first tag are parsed. It uses a safe reliable loop
+     * then the atts on the first tag are parsed. It uses a safe reliable loop
      * rather than risking errors via DOMDocument.
-     * @param    string|mixed   $attrs
+     * @param    string|mixed   $atts
      * @return   array
-     * @example  parseAttrs('src="example.jpg" alt="example"')
-     * @example  parseAttrs('<img src="example.jpg" alt="example">')
-     * @example  parseAttrs('<a href="example"></a>')
-     * @example  parseAttrs('<a href="example">')
+     * @example  parseAtts('src="example.jpg" alt="example"')
+     * @example  parseAtts('<img src="example.jpg" alt="example">')
+     * @example  parseAtts('<a href="example"></a>')
+     * @example  parseAtts('<a href="example">')
      */
-    public static function parseAttrs($attrs) {
-        if ( ! \is_scalar($attrs))
-            return (array) $attrs;
+    public static function parseAtts($atts) {
+        if ( ! \is_scalar($atts))
+            return (array) $atts;
 
         # trim, then strip tagname (if present), then split into array
-        $attrs = \str_split(\preg_replace('#^<+\S*#', '', \trim($attrs)));
+        $atts = \str_split(\preg_replace('#^<+\S*#', '', \trim($atts)));
 
         $arr = array(); # output
         $name = '';     # for the current attr being parsed
@@ -284,7 +285,7 @@ class Phat {
         $stop = false;  # delimiter for the current $value being parsed
         $space = ' ';   # a single space
 
-        foreach ($attrs as $j => $curr) {
+        foreach ($atts as $j => $curr) {
             if ($mode < 0) {# name
                 if ('=' === $curr) {
                     $mode = 1;
@@ -293,7 +294,7 @@ class Phat {
                     '' === $name or $arr[$name] = $value;
                     break; 
                 } elseif ( ! \ctype_space($curr)) {
-                    if (\ctype_space($attrs[$j-1])) { # previous char
+                    if (\ctype_space($atts[$j-1])) { # previous char
                         '' === $name or $arr[$name] = ''; # previous name
                         $name = $curr;                    # initiate new
                     } else {
