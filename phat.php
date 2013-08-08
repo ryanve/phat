@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.5.0-1
+ * @version       2.5.0-2
  * @license       MIT
  */
 
@@ -95,9 +95,9 @@ class Phat {
     /**
      * If $glue is an array then $tokens is split at any
      * of $glue's items. Otherwise $glue splits as a phrase.
-     * @param    string|mixed   $tokens
-     * @param    string|array=  $glue    Defaults to SSV.
-     * @return   array
+     * @param  string|mixed  $tokens
+     * @param  string|array  $glue    Defaults to SSV.
+     * @return array
      */
     public static function explode($tokens, $glue = ' ') {
         if (\is_string($tokens)) $tokens = \trim($tokens);
@@ -107,6 +107,16 @@ class Phat {
         # Normalize multiple delims into 1
         \is_array($glue) and $tokens = \str_replace($glue, $glue = $glue[0], $tokens);
         return \ctype_space($glue) ? \preg_split('#\s+#', $tokens) : \explode($glue, $tokens);
+    }
+    
+    /**
+     * @since  2.5.0-2
+     * @param  mixed   $html
+     * @return string
+     */
+    public static function express($html) {
+        if ( ! $html) return \is_numeric($html) ? (string) $html : '';
+        return \is_scalar($html) ? (string) $html : static::dom($html)->saveHTML();
     }
     
     /**
@@ -151,9 +161,8 @@ class Phat {
                 return self::encode(self::implode($value, $d));
         }
 
-        return $retain && \in_array($value, array(false, true, null)) ? $value : (
-            \str_replace("'", '&apos;', \json_encode($value)) # stringify bool|number|array|object
-        );
+        if ($retain && \in_array($value, array(false, true, null))) return $value;
+        return \str_replace("'", '&apos;', \json_encode($value)); # bool|number|array|object
     }
 
     /**
@@ -377,24 +386,22 @@ class Phat {
     }
     
     /**
-     * @since   2.5.0-0
-     * @param   string        $html
-     * @param   string|array  $tags  whitelist
-     * @return  string
+     * @since  2.5.0-0
+     * @param  mixed         $html
+     * @param  string|array  $tags  whitelist
+     * @return string
      */
     public static function keep($html, $tags = null) {
-        if ( ! $html) return \is_numeric($html) ? (string) $html : '';
-        \is_scalar($html) or $html = static::dom($html)->saveHTML();
-        return \strip_tags($html, \array_reduce(static::explode($tags), function($kept, $tag) {
+        return \strip_tags(self::express($html), \array_reduce(static::explode($tags), function($kept, $tag) {
             return \strlen($tag = \trim($tag, '</>')) ? "$kept<$tag>" : $kept;
         }, ''));
     }
     
     /**
-     * @since   2.5.0-0
-     * @param   string        $html
-     * @param   string|array  $tags  blacklist
-     * @return  string
+     * @since  2.5.0-0
+     * @param  mixed         $html
+     * @param  string|array  $tags  blacklist
+     * @return string
      */
     public static function ban($html, $tags = null) {
         $tags = static::explode($tags);
@@ -406,9 +413,9 @@ class Phat {
     }
     
     /**
-     * @since   2.5.0-0
-     * @param   string $html
-     * @return  string
+     * @since  2.5.0-0
+     * @param  string $html
+     * @return string
      */
     public static function cdata($html) {
         return "<![CDATA[$html]]>";
