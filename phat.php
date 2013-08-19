@@ -4,7 +4,7 @@
  * @link          phat.airve.com
  * @author        Ryan Van Etten
  * @package       airve/phat
- * @version       2.5.0-2
+ * @version       2.5.0-3
  * @license       MIT
  */
 
@@ -101,10 +101,10 @@ class Phat {
      */
     public static function explode($tokens, $glue = ' ') {
         if (\is_string($tokens)) $tokens = \trim($tokens);
-        elseif (\is_scalar($tokens)) return (array) $tokens;
-        else $tokens = self::implode(\is_array($glue) ? $glue[0] : $glue, $tokens);
-        if ('' === $tokens) return array(); # applicable to 1st or 3rd condition above
-        # Normalize multiple delims into 1
+        elseif (empty($tokens) || \is_scalar($tokens)) return (array) $tokens;
+        else $tokens = self::implode(\is_array($glue) ? $glue[0] : $glue, (array) $tokens);
+        if ('' === $tokens) return array(); # Applies to first or last condition above.
+        # Normalize multiple delims into 1.
         \is_array($glue) and $tokens = \str_replace($glue, $glue = $glue[0], $tokens);
         return \ctype_space($glue) ? \preg_split('#\s+#', $tokens) : \explode($glue, $tokens);
     }
