@@ -104,8 +104,7 @@ class Phat {
         elseif (empty($tokens) || \is_scalar($tokens)) return (array) $tokens;
         else $tokens = self::implode(\is_array($glue) ? $glue[0] : $glue, (array) $tokens);
         if ('' === $tokens) return array(); # Applies to first or last condition above.
-        # Normalize multiple delims into 1.
-        \is_array($glue) and $tokens = \str_replace($glue, $glue = $glue[0], $tokens);
+        \is_array($glue) and $tokens = \str_replace($glue, $glue = $glue[0], $tokens); # Normalize glue.
         return \ctype_space($glue) ? \preg_split('#\s+#', $tokens) : \explode($glue, $tokens);
     }
     
