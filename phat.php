@@ -3,8 +3,8 @@
  * phat           PHP HTML utils
  * @link          phat.airve.com
  * @author        Ryan Van Etten
- * @package       airve/phat
- * @version       2.5.0-3
+ * @package       ryanve/phat
+ * @version       2.5.0
  * @license       MIT
  */
 

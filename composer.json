@@ -1,14 +1,8 @@
 {
-    "name": "airve/phat",
+    "name": "ryanve/phat",
     "description": "HTML formatting module",
     "homepage": "http://phat.airve.com",
-    "keywords": [
-        "html",
-        "markup",
-        "attributes",
-        "formatting",
-        "utility"
-    ],
+    "keywords": ["html", "markup", "attributes", "formatting", "utility"],
     "license": "MIT",
     "authors": [
         {
