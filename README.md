@@ -2,7 +2,7 @@
 
 PHP HTML utility module.
 
-**@package**: [airve/phat](https://packagist.org/packages/airve/phat)
+**@package**: [ryanve/phat](https://packagist.org/packages/ryanve/phat)
 
 `Phat` lives in the [`airve`](https://github.com/airve) [namespace](http://php.net/manual/en/language.namespaces.php). You can alias `Phat` locally via [`use`](http://php.net/manual/en/language.namespaces.importing.php):
 
