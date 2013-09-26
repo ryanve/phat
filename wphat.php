@@ -1,6 +1,6 @@
 <?php
 /**
- * This is an in-development WordPress adaptation of phat.php (phat.airve.com)
+ * This is an in-development WordPress adaptation of phat (phat.airve.com)
  * Everything here must be PHP 5.2 compatible as it intends to be in WP core.
  * @link http://core.trac.wordpress.org/ticket/23236
  * @link http://core.trac.wordpress.org/ticket/23237
