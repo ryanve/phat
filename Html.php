@@ -66,6 +66,14 @@ class Html {
         # Prevent double-encoding entities.
         return ($value = (string) $value) ? \htmlentities($value, $flag, null, false) : $value;
     }
+    
+    /**
+     * @param int $timestamp unix timestamp (defaults to now)
+     * @return string
+     */
+    public static function datetime($timestamp = null) {
+        return null === $timestamp ? \date(DATE_W3C) : \date(DATE_W3C, $timestamp);
+    }
 
     /**
      * Deep implode.
