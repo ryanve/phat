@@ -1,7 +1,7 @@
 {
     "name": "ryanve/phat",
     "description": "HTML formatting module",
-    "version": "2.7.0-0",
+    "version": "2.7.0-1",
     "homepage": "http://phat.airve.com",
     "keywords": ["html", "markup", "attributes", "formatting", "utility"],
     "license": "MIT",

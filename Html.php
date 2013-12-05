@@ -203,9 +203,7 @@ class Html {
     
     /**
      * Replace or normalize whitespace.
-     * @param   mixed   $text
-     * @param   string  $replacement
-     * @return  string|array
+     * @return string|array
      */
     public static function respace($text, $replacement = ' ') {
         return \preg_replace('#\s+#', $replacement, $text);
@@ -213,20 +211,31 @@ class Html {
 
     /**
      * Replace or normalize linebreaks.
-     * @param   mixed   $text
-     * @param   string  $replacement
-     * @return  string|array
+     * @return string|array
      */
     public static function rebreak($text, $replacement = "\n\n") {
         return \preg_replace('#\n+\s*\n+#', $replacement, $text);
     }
     
     /**
+     * Sanitize a slug.
+     * @return string
+     */
+    public static function slug($text, $delim = '-') {
+        $text and $text = static::respace(\strip_tags(\trim($text)), $delim);
+        # Strip entities and octets
+        $text and $text = \preg_replace('#&.+?;|%([a-fA-F0-9][a-fA-F0-9])#', '', $text);
+        # Permit lowercase alphanumeric|underscore|dash
+        $text and $text = \mb_strtolower(\preg_replace('#[^\w-]#', '', $text));
+        # Normalize repeat delimiters into one
+        return \implode($delim, \array_diff(\explode($delim, $text), array('')));
+    }
+    
+    /**
      * Produce an attributes string. Null values are skipped. Booleans
      * convert properly to boolean atts. Other values encode via ::encode().
-     * @param  mixed    $name   An array of name/value pairs, or an ssv string of attr 
-                                names, or an indexed array of attr names.
-     * @param  mixed    $value  Attr value for context when $name is an attribute name.
+     * @param  mixed   $name  associative array or ssv or stack of att names
+     * @param  mixed   $value Value for context when $name is an attribute name.
      */
     public static function atts($name, $value = '') {
         # non-assoc recursion
