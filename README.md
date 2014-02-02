@@ -5,7 +5,7 @@ PHP HTML utility module.
 ```php
 use \phat\Html;
 
-echo Html::tag('strong', array('class' => 'awesome'), 'It works');
+echo Html::tag('strong', ['class' => 'awesome'], 'It works');
 ```
 
 ## Methods
