@@ -1,19 +1,19 @@
 {
-    "name": "ryanve/phat",
-    "description": "HTML formatting module",
-    "version": "2.7.0-1",
-    "homepage": "http://phat.airve.com",
-    "keywords": ["html", "markup", "attributes", "formatting", "utility"],
-    "license": "MIT",
-    "authors": [{
-        "name": "Ryan Van Etten",
-        "homepage": "http://ryanve.com"
-    }],
-    "require": {
-        "php": ">=5.3"
-    },
-    "autoload": {
-        "psr-0": { "phat": "../" }
-    },
-    "minimum-stability": "dev"
+  "name": "ryanve/phat",
+  "description": "HTML formatting module",
+  "version": "2.7.0-2",
+  "homepage": "http://phat.airve.com",
+  "keywords": ["html", "markup", "attributes", "formatting", "utility"],
+  "license": "MIT",
+  "authors": [{
+    "name": "Ryan Van Etten",
+    "homepage": "http://ryanve.com"
+  }],
+  "require": {
+    "php": ">=5.3"
+  },
+  "autoload": {
+    "psr-0": { "phat": "../" }
+  },
+  "minimum-stability": "dev"
 }
