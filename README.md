@@ -28,6 +28,6 @@ echo Html::tag('strong', ['class' => 'awesome'], 'It works');
 - `Html::esc_e($string)`
 - `Html::tag_e($tagname, $atts, $inner_html)`
 
-## [MIT License](http://opensource.org/licenses/MIT)
+## License
 
-Copyright (C) 2012 by [Ryan Van Etten](https://github.com/ryanve)
+[MIT](http://opensource.org/licenses/MIT)
